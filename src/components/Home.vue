@@ -1,10 +1,11 @@
 <template lang="html">
-    <h1>home</h1>
+    <div class="home">
+        <h1>home</h1>
+    </div>
 </template>
 
 <script>
-export default {
-}
+
 </script>
 
 <style lang="css">
