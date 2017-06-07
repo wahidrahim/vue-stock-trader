@@ -4,7 +4,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">{{ stock.name }}
                     <small>(Price: {{ stock.price }})</small>
-                    <strong class="pull-right" v-if="insufficientFunds">Insufficient Funds</strong>
+                    <p class="pull-right" v-if="insufficientFunds" :class="{'text-danger': insufficientFunds}">Insufficient Funds</p>
                 </h3>
             </div>
             <div class="panel-body">

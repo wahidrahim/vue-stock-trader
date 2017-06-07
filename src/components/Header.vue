@@ -1,5 +1,5 @@
 <template lang="html">
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -15,7 +15,7 @@
                 <strong class="navbar-text navbar-right">Funds: {{ funds | currency }}</strong>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#" @click="endDay">End Day</a></li>
-                    <li class="dropdown">
+                    <li class="dropdown" :class="{ open: isDropdownOpen }" @click="isDropdownOpen = !isDropdownOpen">
                         <a
                         href="#"
                         class="dropdown-toggle"
@@ -24,8 +24,8 @@
                         aria-haspopup="true"
                         aria-expanded="false">Save &amp; Load <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Save Data</a></li>
-                            <li><a href="#">Load Data</a></li>
+                            <li @click="saveData"><a href="#">Save Data</a></li>
+                            <li @click="loadData"><a href="#">Load Data</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -35,19 +35,40 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-
-    computed: {
-        funds() {
-            return this.$store.getters.funds
+    data() {
+        return {
+            isDropdownOpen: false
         }
     },
+    computed: {
+        ...mapGetters([
+            'funds',
+            'stockPortfolio',
+            'stocks'
+        ])
+    },
     methods: {
-        ...mapActions(['randomizeStocks']),
+        ...mapActions({
+            randomizeStocks: 'randomizeStocks',
+            fetchData: 'loadData'
+        }),
         endDay() {
             this.randomizeStocks()
+        },
+        saveData() {
+            const data = {
+                funds: this.funds,
+                stockPortfolio: this.stockPortfolio,
+                stocks: this.stocks
+            }
+
+            this.$http.put('data.json', data)
+        },
+        loadData() {
+            this.fetchData()
         }
     }
 }
