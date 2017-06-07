@@ -4,6 +4,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">{{ stock.name }}
                     <small>(Price: {{ stock.price }})</small>
+                    <strong class="pull-right" v-if="insufficientFunds">Insufficient Funds</strong>
                 </h3>
             </div>
             <div class="panel-body">
@@ -18,7 +19,7 @@
                     <button
                     class="btn btn-success"
                     @click="buyStock"
-                    :disabled="quantity <= 0 || !Number.isInteger(quantity)">Buy</button>
+                    :disabled="insufficientFunds || quantity <= 0 || !Number.isInteger(quantity)">Buy</button>
                 </div>
             </div>
         </div>
@@ -33,6 +34,13 @@ export default {
             quantity: 0
         }
     },
+    computed: {
+        insufficientFunds() {
+            const total = this.quantity * this.stock.price
+
+            return total > this.$store.getters.funds
+        }
+    },
     methods: {
         buyStock() {
             const order = {
@@ -41,7 +49,7 @@ export default {
                 quantity: this.quantity
             }
 
-            console.log(order)
+            this.$store.dispatch('buyStock', order)
             this.quantity = 0
         }
     }
